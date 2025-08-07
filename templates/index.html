@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sticky Note</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<!-- <style>
+    button#add-button {
+        background-color: #a26fd4;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .todo-item {
+        background-color: #c8ce88;
+        padding: 10px;
+        width: 150px;
+        margin: 5px 0;
+        border-radius: 5px;
+    }
+    
+    .btn-deleted {
+        background-color: #f44336;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .btn-completed {
+        background-color: #4caf50;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .form-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style> -->
+<!-- <style>
+    /* General Body Style */
+    
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1a1a1a;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+    }
+    
+    h1 {
+        font-size: 40px;
+        color: #ff00ff;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+    }
+    
+    h2 {
+        font-size: 24px;
+        margin-top: 30px;
+        color: #ff80ff;
+        text-shadow: 0 0 10px #ff80ff, 0 0 20px #ff80ff;
+    }
+    /* Button Styling */
+    
+    button {
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #fff;
+        box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+    
+    button:hover {
+        opacity: 0.8;
+        box-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+    }
+    /* Add Task Button */
+    
+    button#add-button {
+        background-color: #ff00ff;
+    }
+    
+    button#add-button:hover {
+        background-color: #ff1aff;
+    }
+    /* Task Container Styling */
+    
+    .todo-item {
+        background-color: #333;
+        padding: 15px;
+        margin: 10px;
+        width: 250px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3), 0 0 20px rgba(255, 0, 255, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    
+    .todo-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 30px rgba(255, 0, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.7);
+    }
+    
+    .todo-item h3 {
+        color: #ff00ff;
+        font-size: 20px;
+        margin-bottom: 8px;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+    
+    .todo-item p {
+        color: #ccc;
+        font-size: 14px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .todo-item.completed {
+        background-color: #4b0082;
+        box-shadow: 0 0 10px rgba(75, 0, 130, 0.3), 0 0 20px rgba(75, 0, 130, 0.5);
+    }
+    /* Delete Button */
+    
+    .btn-deleted {
+        background-color: #ff4444;
+        color: white;
+        padding: 8px 15px;
+        width: 100%;
+        margin-top: 10px;
+        text-shadow: 0 0 10px #ff4444, 0 0 20px #ff4444;
+    }
+    
+    .btn-deleted:hover {
+        background-color: #ff2222;
+        box-shadow: 0 0 10px rgba(255, 68, 68, 0.5), 0 0 20px rgba(255, 68, 68, 0.7);
+    }
+    /* Completed Button */
+    
+    .btn-completed {
+        background-color: #00ff00;
+        color: rgb(0, 0, 0);
+        padding: 8px 15px;
+        width: 100%;
+        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    }
+    
+    .btn-completed:hover {
+        background-color: #33ff33;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.7);
+    }
+    /* Task Form Styling */
+    
+    .form-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #222;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), 0 0 25px rgba(255, 0, 255, 0.5);
+        z-index: 100;
+        width: 300px;
+        max-width: 100%;
+    }
+    
+    .form-container input,
+    .form-container button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 5px;
+        border: 1px solid #444;
+        font-size: 16px;
+        color: #fff;
+        background-color: #444;
+        box-shadow: 0 0 5px rgba(255, 0, 255, 0.2), 0 0 10px rgba(255, 0, 255, 0.4);
+    }
+    
+    .form-container input:focus,
+    .form-container button:focus {
+        outline: none;
+        border-color: #ff00ff;
+    }
+    
+    .form-container button {
+        background-color: #ff00ff;
+        color: white;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+    
+    .form-container button:hover {
+        background-color: #ff1aff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.7), 0 0 30px rgba(255, 0, 255, 0.9);
+    }
+    /* Overlay */
+    
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+    }
+    /* Task Section */
+    
+    .task-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+</style> -->
+<!-- <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f7f3;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    h1 {
+        margin-top: 40px;
+        font-size: 36px;
+        color: #444;
+    }
+    
+    h2 {
+        margin-top: 40px;
+        font-size: 24px;
+        color: #666;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        background-color: #ffd966;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    button:hover {
+        background-color: #ffce33;
+    }
+    
+    #add-button {
+        margin-top: 20px;
+    }
+    
+    .form-container {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff8dc;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+    
+    .form-container input,
+    .form-container button {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    
+    .form-container input:focus {
+        outline: none;
+        border-color: #ffd966;
+    }
+    
+    .form-container button {
+        background-color: #ffd966;
+        color: #333;
+        font-weight: bold;
+    }
+    
+    .todo-item {
+        background-color: #fffbe6;
+        border: 1px solid #f0e6a6;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px;
+        width: 250px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .todo-item h3 {
+        margin-bottom: 10px;
+        color: #222;
+        font-size: 18px;
+    }
+    
+    .todo-item p {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .btn-completed {
+        background-color: #b6e6bd;
+        color: #2e7d32;
+        margin-bottom: 8px;
+    }
+    
+    .btn-completed:hover {
+        background-color: #a1dba8;
+    }
+    
+    .btn-deleted {
+        background-color: #f7a6a6;
+        color: #a10000;
+    }
+    
+    .btn-deleted:hover {
+        background-color: #f28585;
+    }
+    
+    .task-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 1000px;
+        margin-bottom: 50px;
+    }
+</style> -->
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    h1 {
+        margin-top: 30px;
+        font-size: 32px;
+        color: #2f4f4f;
+    }
+    
+    h2 {
+        margin-top: 30px;
+        font-size: 22px;
+        color: #4a4a4a;
+    }
+    
+    button {
+        padding: 8px 16px;
+        font-size: 13px;
+        border: none;
+        border-radius: 5px;
+        background-color: #c3e4ff;
+        color: #1a1a1a;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    button:hover {
+        background-color: #a9d4f8;
+    }
+    
+    #add-button {
+        margin-top: 15px;
+    }
+    
+    .form-container {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #ffffff;
+        border: 1px solid #d0d0d0;
+        border-radius: 8px;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+        width: 90%;
+        max-width: 400px;
+    }
+    
+    .form-container input,
+    .form-container button {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 13px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    
+    .form-container input:focus {
+        outline: none;
+        border-color: #a9d4f8;
+        box-shadow: 0 0 3px #a9d4f8;
+    }
+    
+    .form-container button {
+        background-color: #a9d4f8;
+        color: #1a1a1a;
+        font-weight: bold;
+    }
+    
+    .todo-item {
+        background-color: #ffffff;
+        border-left: 4px solid #90caf9;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 10px;
+        width: 220px;
+        box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .todo-item h3 {
+        margin-bottom: 6px;
+        color: #1a1a1a;
+        font-size: 16px;
+    }
+    
+    .todo-item p {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 12px;
+    }
+    
+    .btn-completed {
+        background-color: #d2f8d2;
+        color: #2e7d32;
+        margin-bottom: 5px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    .btn-completed:hover {
+        background-color: #b8efb8;
+    }
+    
+    .btn-deleted {
+        background-color: #f8d2d2;
+        color: #a10000;
+        padding: 6px 10px;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    
+    .btn-deleted:hover {
+        background-color: #f1a1a1;
+    }
+    
+    .edit-button {
+        margin-top: 5px;
+        background-color: #e0d4ff;
+        color: #4b0082;
+        font-size: 12px;
+    }
+    
+    .edit-button:hover {
+        background-color: #d0c2ff;
+    }
+    
+    .task-section {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-rows: auto;
+        gap: 12px 20px;
+        max-height: 900px;
+        /* Approx. 3-4 cards per column */
+        padding: 20px;
+        justify-content: start;
+        overflow-x: auto;
+    }
+</style>
+
+
+
+
+<body>
+    <h1>Sticky Note</h1>
+
+    <button id="add-button">+Add a Task</button>
+    <div id="add-form-container" class="form-container">
+        <form action="{% url 'add_task' %}" method="POST">
+            {% csrf_token %} {{ form.as_p }}
+
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    <h2>Upcoming Task</h2>
+    {% for todo in card %}
+    <div class="todo-item">
+        <h3>{{ todo.title }}</h3>
+        <p>{{ todo.description }}</p>
+        <a href="{% url 'completed' todo.id %} ">
+            <button class="btn-completed">Completed</button>
+        </a>
+        <button class="edit-button">Edit</button>
+        <div class="form-container">
+            <form action="{% url 'edit_task' todo.id %} " method="POST">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit ">Edit</button>
+            </form>
+        </div>
+        <a href="{% url 'delete_task' todo.id %} ">
+            <button class="btn-deleted ">Delete</button>
+        </a>
+    </div>
+    {% endfor %}
+    <h2>Completed Task</h2>
+    {% for todo in completed %}
+    <div class="todo-item ">
+        <h3>{{ todo.title }}</h3>
+        <p>{{ todo.description }}</p>
+        <a href="{% url 'completed' todo.id %} ">
+            <button class="btn-completed ">Completed</button>
+        </a>
+        <a href="{% url 'delete_task' todo.id %} ">
+            <button class="btn-deleted ">Delete</button>
+        </a>
+    </div> {% endfor %}
+    <script>
+        const addButton = document.getElementById('add-button');
+        const editButtons = document.getElementsByClassName('edit-button');
+
+        const addFormContainer = document.querySelector('#add-form-container');
+        addButton.addEventListener('click', () => {
+            addFormContainer.style.display = 'block';
+        });
+
+        Array.from(editButtons).forEach(button => {
+            button.addEventListener('click', () => {
+                const editFormContainer = button.nextElementSibling;
+                editFormContainer.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+
+</html>
